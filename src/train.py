@@ -35,7 +35,7 @@ def parse_args() -> argparse.Namespace:
 def get_transforms(img_size: int) -> Tuple[A.Compose, A.Compose]:
     train_transform = A.Compose(
         [
-            A.RandomResizedCrop(img_size, img_size, scale=(0.8, 1.0), ratio=(0.8, 1.2)),
+            A.RandomResizedCrop((img_size, img_size), scale=(0.8, 1.0), ratio=(0.8, 1.2)),
             A.HorizontalFlip(p=0.5),
             A.Rotate(limit=30, p=0.5),
             A.ColorJitter(0.2, 0.2, 0.2, 0.1, p=0.5),

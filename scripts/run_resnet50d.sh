@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-CONFIG=${1:-configs/resnet50d_baseline.yaml}
-DEVICE=${2:-cuda}
+# Handle config path: if $1 ends with /, treat it as directory and combine with $2
+if [[ -n "${1:-}" && "${1}" == */ ]]; then
+    # First arg is a directory, second arg should be filename
+    CONFIG="${1}${2:-resnet50d_baseline.yaml}"
+    DEVICE=${3:-cuda}
+else
+    # First arg is full path or default
+    CONFIG=${1:-configs/resnet50d_baseline.yaml}
+    DEVICE=${2:-cuda}
+fi
 LOG_PATH=${LOG_PATH:-logs/experiment_results.jsonl}
 ADDITIONAL_LOG_ARGS=()
 
