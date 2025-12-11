@@ -15,10 +15,13 @@ pip install -r requirements.txt
 
 ```bash
 python src/train.py --config configs/resnet50d_baseline.yaml --device cuda
+# EfficientNet-B4 (EMA enabled in config by default)
+python src/train.py --config configs/effnet_b4.yaml --device cuda
 ```
 
 Key artifacts are written to `logs/`, `weights/`, `oof/`, and the augmented `train_folds.csv` file used
 for reproducibility.
+Configs can toggle extras such as Exponential Moving Average (see `training.ema.*` fields).
 
 ## Inference
 
@@ -66,6 +69,7 @@ LB_PUBLIC=0.9610 NOTES="resnet50d baseline @512" ./scripts/run_resnet50d.sh
 
 This exports the same JSON log so that syncing the `logs/` directory back to this repo + running
 `python src/update_results_md.py` keeps `results.md` up to date automatically.
+The script accepts any config path, so it works for EfficientNet-B4 and future experiments as well.
 
 ## Repository layout
 

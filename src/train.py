@@ -14,8 +14,9 @@ from albumentations.pytorch import ToTensorV2
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import LabelEncoder
-from torch.cuda.amp import GradScaler, autocast
+from torch import amp
 from torch.utils.data import DataLoader
+from timm.utils import ModelEmaV2
 
 from dataset import LeafDataset
 from models import create_model
@@ -144,11 +145,12 @@ def train_one_epoch(
     criterion: nn.Module,
     optimizer: torch.optim.Optimizer,
     device: torch.device,
-    scaler: GradScaler,
+    scaler: amp.GradScaler,
     scheduler: torch.optim.lr_scheduler._LRScheduler | None = None,
     scheduler_step_per_batch: bool = False,
     grad_clip: float | None = None,
     use_amp: bool = True,
+    ema: ModelEmaV2 | None = None,
 ) -> Tuple[float, float]:
     model.train()
     loss_meter = AverageMeter()
@@ -159,7 +161,7 @@ def train_one_epoch(
         images = images.to(device, non_blocking=True)
         targets = targets.to(device, non_blocking=True)
 
-        with autocast(enabled=use_amp):
+        with amp.autocast(device_type=device.type, enabled=use_amp and device.type == "cuda"):
             outputs = model(images)
             loss = criterion(outputs, targets)
 
@@ -176,6 +178,9 @@ def train_one_epoch(
                 torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
             optimizer.step()
         optimizer.zero_grad(set_to_none=True)
+
+        if ema is not None:
+            ema.update(model)
 
         if scheduler is not None and scheduler_step_per_batch:
             scheduler.step()
@@ -281,8 +286,15 @@ def run_training(config_path: str, device_override: str | None = None) -> None:
         scheduler, step_per_batch = build_scheduler(optimizer, config, steps_per_epoch=len(train_loader))
 
         criterion = nn.CrossEntropyLoss(label_smoothing=config["training"].get("label_smoothing", 0.0))
-        scaler = GradScaler(enabled=config["training"].get("amp", True) and device.type == "cuda")
+        amp_enabled = config["training"].get("amp", True) and device.type == "cuda"
+        scaler = amp.GradScaler(device_type=device.type, enabled=amp_enabled)
         grad_clip = config["training"].get("grad_clip")
+        ema_cfg = config["training"].get("ema", {})
+        ema: ModelEmaV2 | None = None
+        if ema_cfg.get("enabled", False):
+            ema_decay = ema_cfg.get("decay", 0.9998)
+            ema_device = ema_cfg.get("device", "")
+            ema = ModelEmaV2(model, decay=ema_decay, device=ema_device)
 
         best_acc = 0.0
         best_probs = None
@@ -301,9 +313,11 @@ def run_training(config_path: str, device_override: str | None = None) -> None:
                 scheduler_step_per_batch=step_per_batch,
                 grad_clip=grad_clip,
                 use_amp=scaler.is_enabled(),
+                ema=ema,
             )
 
-            val_loss, val_acc, val_probs = validate(model, valid_loader, criterion, device)
+            eval_model = ema.module if ema is not None else model
+            val_loss, val_acc, val_probs = validate(eval_model, valid_loader, criterion, device)
             if scheduler is not None and not step_per_batch:
                 scheduler.step()
 
@@ -322,7 +336,7 @@ def run_training(config_path: str, device_override: str | None = None) -> None:
             if val_acc > best_acc:
                 best_acc = val_acc
                 best_probs = val_probs.copy()
-                torch.save(model.state_dict(), weights_path)
+                torch.save(eval_model.state_dict(), weights_path)
                 print(f"Fold {fold} epoch {epoch}: improved val acc to {val_acc:.4f}")
 
         if best_probs is None:
