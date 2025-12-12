@@ -287,13 +287,13 @@ def run_training(config_path: str, device_override: str | None = None) -> None:
 
         criterion = nn.CrossEntropyLoss(label_smoothing=config["training"].get("label_smoothing", 0.0))
         amp_enabled = config["training"].get("amp", True) and device.type == "cuda"
-        scaler = amp.GradScaler(device_type=device.type, enabled=amp_enabled)
+        scaler = amp.GradScaler(device=device.type, enabled=amp_enabled)
         grad_clip = config["training"].get("grad_clip")
         ema_cfg = config["training"].get("ema", {})
         ema: ModelEmaV2 | None = None
         if ema_cfg.get("enabled", False):
             ema_decay = ema_cfg.get("decay", 0.9998)
-            ema_device = ema_cfg.get("device", "")
+            ema_device = device
             ema = ModelEmaV2(model, decay=ema_decay, device=ema_device)
 
         best_acc = 0.0

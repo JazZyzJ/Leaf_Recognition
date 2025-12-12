@@ -15,6 +15,7 @@ data:
 model:
   model_name: tf_efficientnet_b4_ns
   pretrained: true
+  checkpoint_path: weights/effnet_b4_baseline_fold_0.pth
 
 training:
   img_size: 380
@@ -22,7 +23,7 @@ training:
   num_workers: 4
   num_epochs: 25
   aug_desc: "RRC + flips + rotation (380)"
-  lr: 0.0002
+  lr: 0.001
   min_lr: 1.0e-6
   weight_decay: 0.0001
   optimizer: adamw

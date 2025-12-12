@@ -1,0 +1,234 @@
+/home/chenzijie/.local/lib/python3.10/site-packages/albumentations/check_version.py:147: UserWarning: Error fetching version info <urlopen error _ssl.c:980: The handshake operation timed out>
+  data = fetch_version_info()
+/home/chenzijie/.local/lib/python3.10/site-packages/timm/models/_factory.py:138: UserWarning: Mapping deprecated model name tf_efficientnet_b4_ns to current tf_efficientnet_b4.ns_jft_in1k.
+  model = create_fn(
+Starting fold 0
+{"fold": 0, "epoch": 0, "train_loss": 2.6389421949989793, "train_acc": 0.4751226826608506, "val_loss": 4.947411274916468, "val_acc": 0.06782892944701716, "lr": 0.0009960612933065818}
+Fold 0 epoch 0: improved val acc to 0.0678
+{"fold": 0, "epoch": 1, "train_loss": 1.64537855726032, "train_acc": 0.772082878953108, "val_loss": 4.150966283704175, "val_acc": 0.4072459820212476, "lr": 0.0009843072889837514}
+Fold 0 epoch 1: improved val acc to 0.4072
+{"fold": 0, "epoch": 2, "train_loss": 1.406159704228134, "train_acc": 0.8516902944383861, "val_loss": 3.059722595596729, "val_acc": 0.6431490057205121, "lr": 0.000964923354701182}
+Fold 0 epoch 2: improved val acc to 0.6431
+{"fold": 0, "epoch": 3, "train_loss": 1.2777749758900316, "train_acc": 0.8916303162486369, "val_loss": 2.244604780770751, "val_acc": 0.7480250612912013, "lr": 0.0009382151866819102}
+Fold 0 epoch 3: improved val acc to 0.7480
+{"fold": 0, "epoch": 4, "train_loss": 1.1955019441009738, "train_acc": 0.9186205016357688, "val_loss": 1.7125964555387048, "val_acc": 0.8161263960773631, "lr": 0.0009046039886902867}
+Fold 0 epoch 4: improved val acc to 0.8161
+{"fold": 0, "epoch": 5, "train_loss": 1.1289571097268922, "train_acc": 0.9351826608505998, "val_loss": 1.3971458979699891, "val_acc": 0.869517842549714, "lr": 0.0008646198293969955}
+Fold 0 epoch 5: improved val acc to 0.8695
+{"fold": 0, "epoch": 6, "train_loss": 1.0751060748568277, "train_acc": 0.9494274809160306, "val_loss": 1.2262359188285585, "val_acc": 0.9122854807954236, "lr": 0.0008188932828794708}
+Fold 0 epoch 6: improved val acc to 0.9123
+{"fold": 0, "epoch": 7, "train_loss": 1.0363078286369598, "train_acc": 0.9606052344601963, "val_loss": 1.1293852329903615, "val_acc": 0.933533097248706, "lr": 0.000768145484092009}
+Fold 0 epoch 7: improved val acc to 0.9335
+{"fold": 0, "epoch": 8, "train_loss": 1.0103190270869007, "train_acc": 0.9666712104689203, "val_loss": 1.0764811009745026, "val_acc": 0.9487877962408063, "lr": 0.0007131767561367541}
+Fold 0 epoch 8: improved val acc to 0.9488
+{"fold": 0, "epoch": 9, "train_loss": 0.9934522239826498, "train_acc": 0.9675572519083969, "val_loss": 1.0456034746685718, "val_acc": 0.9588667937891583, "lr": 0.0006548539886902865}
+Fold 0 epoch 9: improved val acc to 0.9589
+{"fold": 0, "epoch": 10, "train_loss": 0.9699806844655144, "train_acc": 0.9743047982551799, "val_loss": 1.0232952673407285, "val_acc": 0.9640424952329065, "lr": 0.0005940969666355698}
+Fold 0 epoch 10: improved val acc to 0.9640
+{"fold": 0, "epoch": 11, "train_loss": 0.9468048338411679, "train_acc": 0.9773037077426391, "val_loss": 1.0054019418733058, "val_acc": 0.9662217379460637, "lr": 0.0005318638645048923}
+Fold 0 epoch 11: improved val acc to 0.9662
+{"fold": 0, "epoch": 12, "train_loss": 0.9408661223939877, "train_acc": 0.9763495092693566, "val_loss": 0.988848231138179, "val_acc": 0.9716698447289567, "lr": 0.0004691361354951082}
+Fold 0 epoch 12: improved val acc to 0.9717
+{"fold": 0, "epoch": 13, "train_loss": 0.9208250811471804, "train_acc": 0.9822791712104689, "val_loss": 0.974433129244882, "val_acc": 0.9741214927812585, "lr": 0.00040690303336443076}
+Fold 0 epoch 13: improved val acc to 0.9741
+{"fold": 0, "epoch": 14, "train_loss": 0.9075904480763584, "train_acc": 0.9851417666303163, "val_loss": 0.9627217403616837, "val_acc": 0.9763007354944157, "lr": 0.0003461460113097141}
+Fold 0 epoch 14: improved val acc to 0.9763
+{"fold": 0, "epoch": 15, "train_loss": 0.895261206309694, "train_acc": 0.98657306434024, "val_loss": 0.9538450589364441, "val_acc": 0.9763007354944157, "lr": 0.00028782324386324637}
+{"fold": 0, "epoch": 16, "train_loss": 0.8883244530455237, "train_acc": 0.9877317339149401, "val_loss": 0.9465425823566798, "val_acc": 0.976845546172705, "lr": 0.00023285451590799116}
+Fold 0 epoch 16: improved val acc to 0.9768
+{"fold": 0, "epoch": 17, "train_loss": 0.8819200590236627, "train_acc": 0.9894356597600873, "val_loss": 0.940541160558037, "val_acc": 0.9757559248161264, "lr": 0.00018210671712052954}
+{"fold": 0, "epoch": 18, "train_loss": 0.8766345738584629, "train_acc": 0.9897764449291166, "val_loss": 0.9359332510932075, "val_acc": 0.9752111141378371, "lr": 0.0001363801706030051}
+{"fold": 0, "epoch": 19, "train_loss": 0.8714565675027238, "train_acc": 0.9905261723009815, "val_loss": 0.9323317428857486, "val_acc": 0.9749387087986925, "lr": 9.639601130971386e-05}
+{"fold": 0, "epoch": 20, "train_loss": 0.868988545536345, "train_acc": 0.9913440567066522, "val_loss": 0.9295900049861657, "val_acc": 0.9752111141378371, "lr": 6.278481331809018e-05}
+{"fold": 0, "epoch": 21, "train_loss": 0.8656389476038767, "train_acc": 0.9915485278080698, "val_loss": 0.9276654993244037, "val_acc": 0.9763007354944157, "lr": 3.607664529881847e-05}
+{"fold": 0, "epoch": 22, "train_loss": 0.8628748328371162, "train_acc": 0.9927753544165758, "val_loss": 0.9264346643677527, "val_acc": 0.9757559248161264, "lr": 1.669271101624884e-05}
+{"fold": 0, "epoch": 23, "train_loss": 0.8634472127959149, "train_acc": 0.992025627044711, "val_loss": 0.925579714940699, "val_acc": 0.976028330155271, "lr": 4.938706693418358e-06}
+{"fold": 0, "epoch": 24, "train_loss": 0.8616192481899989, "train_acc": 0.9927753544165758, "val_loss": 0.9251830660007656, "val_acc": 0.9754835194769818, "lr": 1e-06}
+Saved best model for fold 0 to weights/effnet_b4_baseline_fold0.pth
+Starting fold 1
+{"fold": 1, "epoch": 0, "train_loss": 2.682365515239886, "train_acc": 0.4623773173391494, "val_loss": 4.929335178130006, "val_acc": 0.07137019885589757, "lr": 0.0009960612933065818}
+Fold 1 epoch 0: improved val acc to 0.0714
+{"fold": 1, "epoch": 1, "train_loss": 1.6536681100872377, "train_acc": 0.7660169029443838, "val_loss": 4.0855464839181925, "val_acc": 0.43530373195314626, "lr": 0.0009843072889837514}
+Fold 1 epoch 1: improved val acc to 0.4353
+{"fold": 1, "epoch": 2, "train_loss": 1.4254495014671151, "train_acc": 0.8432388222464559, "val_loss": 3.0552233109127367, "val_acc": 0.6423317897030781, "lr": 0.000964923354701182}
+Fold 1 epoch 2: improved val acc to 0.6423
+{"fold": 1, "epoch": 3, "train_loss": 1.2756324516387907, "train_acc": 0.8943565976008724, "val_loss": 2.2333771528453408, "val_acc": 0.7499318986652138, "lr": 0.0009382151866819102}
+Fold 1 epoch 3: improved val acc to 0.7499
+{"fold": 1, "epoch": 4, "train_loss": 1.1942867865479239, "train_acc": 0.9188931297709924, "val_loss": 1.7106179816948235, "val_acc": 0.8281122309997276, "lr": 0.0009046039886902867}
+Fold 1 epoch 4: improved val acc to 0.8281
+{"fold": 1, "epoch": 5, "train_loss": 1.1354127870781212, "train_acc": 0.9327971646673937, "val_loss": 1.3991433884395432, "val_acc": 0.8798692454372106, "lr": 0.0008646198293969955}
+Fold 1 epoch 5: improved val acc to 0.8799
+{"fold": 1, "epoch": 6, "train_loss": 1.08233513378395, "train_acc": 0.9469056706652127, "val_loss": 1.2207111927184187, "val_acc": 0.9171887769000272, "lr": 0.0008188932828794708}
+Fold 1 epoch 6: improved val acc to 0.9172
+{"fold": 1, "epoch": 7, "train_loss": 1.0481097858760713, "train_acc": 0.9554252998909487, "val_loss": 1.1194533674699414, "val_acc": 0.9411604467447562, "lr": 0.000768145484092009}
+Fold 1 epoch 7: improved val acc to 0.9412
+{"fold": 1, "epoch": 8, "train_loss": 1.0192309879944654, "train_acc": 0.9638086150490731, "val_loss": 1.0678471908261489, "val_acc": 0.954508308362844, "lr": 0.0007131767561367541}
+Fold 1 epoch 8: improved val acc to 0.9545
+{"fold": 1, "epoch": 9, "train_loss": 0.9895896613922868, "train_acc": 0.968784078516903, "val_loss": 1.037645338131082, "val_acc": 0.9626804685371834, "lr": 0.0006548539886902865}
+Fold 1 epoch 9: improved val acc to 0.9627
+{"fold": 1, "epoch": 10, "train_loss": 0.9729513069665549, "train_acc": 0.9712377317339149, "val_loss": 1.0173910365251455, "val_acc": 0.967583764641787, "lr": 0.0005940969666355698}
+Fold 1 epoch 10: improved val acc to 0.9676
+{"fold": 1, "epoch": 11, "train_loss": 0.9510820673752247, "train_acc": 0.9766221374045801, "val_loss": 1.000014986192391, "val_acc": 0.9700354126940888, "lr": 0.0005318638645048923}
+Fold 1 epoch 11: improved val acc to 0.9700
+{"fold": 1, "epoch": 12, "train_loss": 0.9362414646954677, "train_acc": 0.9794165757906216, "val_loss": 0.9844359210614968, "val_acc": 0.9738490874421138, "lr": 0.0004691361354951082}
+Fold 1 epoch 12: improved val acc to 0.9738
+{"fold": 1, "epoch": 13, "train_loss": 0.923867254961798, "train_acc": 0.9818020719738277, "val_loss": 0.9698116708210982, "val_acc": 0.9763007354944157, "lr": 0.00040690303336443076}
+Fold 1 epoch 13: improved val acc to 0.9763
+{"fold": 1, "epoch": 14, "train_loss": 0.9098597737669035, "train_acc": 0.9835741548527808, "val_loss": 0.9574757489674879, "val_acc": 0.9771179515118497, "lr": 0.0003461460113097141}
+Fold 1 epoch 14: improved val acc to 0.9771
+{"fold": 1, "epoch": 15, "train_loss": 0.9011703216782573, "train_acc": 0.9847328244274809, "val_loss": 0.9473126297002266, "val_acc": 0.9765731408335603, "lr": 0.00028782324386324637}
+{"fold": 1, "epoch": 16, "train_loss": 0.8904733041640587, "train_acc": 0.9880725190839694, "val_loss": 0.9393413350193093, "val_acc": 0.9771179515118497, "lr": 0.00023285451590799116}
+{"fold": 1, "epoch": 17, "train_loss": 0.885909902555472, "train_acc": 0.987186477644493, "val_loss": 0.9332001568250778, "val_acc": 0.9771179515118497, "lr": 0.00018210671712052954}
+{"fold": 1, "epoch": 18, "train_loss": 0.8771837489555551, "train_acc": 0.9892311886586695, "val_loss": 0.9279002895214941, "val_acc": 0.9784799782075728, "lr": 0.0001363801706030051}
+Fold 1 epoch 18: improved val acc to 0.9785
+{"fold": 1, "epoch": 19, "train_loss": 0.8744810501127752, "train_acc": 0.989571973827699, "val_loss": 0.9238059239665484, "val_acc": 0.9790247888858622, "lr": 9.639601130971386e-05}
+Fold 1 epoch 19: improved val acc to 0.9790
+{"fold": 1, "epoch": 20, "train_loss": 0.869692334821986, "train_acc": 0.9901172300981461, "val_loss": 0.9203246870374718, "val_acc": 0.9790247888858622, "lr": 6.278481331809018e-05}
+{"fold": 1, "epoch": 21, "train_loss": 0.8672119686491747, "train_acc": 0.9918211559432933, "val_loss": 0.9176780911889592, "val_acc": 0.9790247888858622, "lr": 3.607664529881847e-05}
+{"fold": 1, "epoch": 22, "train_loss": 0.8656710674874525, "train_acc": 0.9914122137404581, "val_loss": 0.9156886793813079, "val_acc": 0.9787523835467176, "lr": 1.669271101624884e-05}
+{"fold": 1, "epoch": 23, "train_loss": 0.863616337952983, "train_acc": 0.9927071973827699, "val_loss": 0.9144474353039501, "val_acc": 0.9795695995641515, "lr": 4.938706693418358e-06}
+Fold 1 epoch 23: improved val acc to 0.9796
+{"fold": 1, "epoch": 24, "train_loss": 0.8632111143779858, "train_acc": 0.992639040348964, "val_loss": 0.9136659989594699, "val_acc": 0.9803868155815854, "lr": 1e-06}
+Fold 1 epoch 24: improved val acc to 0.9804
+Saved best model for fold 1 to weights/effnet_b4_baseline_fold1.pth
+Starting fold 2
+{"fold": 2, "epoch": 0, "train_loss": 2.6459282064645864, "train_acc": 0.4738276990185387, "val_loss": 4.973626699606101, "val_acc": 0.06810133478616182, "lr": 0.0009960612933065818}
+Fold 2 epoch 0: improved val acc to 0.0681
+{"fold": 2, "epoch": 1, "train_loss": 1.6546359905889796, "train_acc": 0.762881679389313, "val_loss": 4.10522777343829, "val_acc": 0.3759193680196132, "lr": 0.0009843072889837514}
+Fold 2 epoch 1: improved val acc to 0.3759
+{"fold": 2, "epoch": 2, "train_loss": 1.4084787929071074, "train_acc": 0.8488958560523446, "val_loss": 2.9680434967769456, "val_acc": 0.6398801416507763, "lr": 0.000964923354701182}
+Fold 2 epoch 2: improved val acc to 0.6399
+{"fold": 2, "epoch": 3, "train_loss": 1.2773842827834376, "train_acc": 0.8919711014176663, "val_loss": 2.1534633570229187, "val_acc": 0.7662762190138926, "lr": 0.0009382151866819102}
+Fold 2 epoch 3: improved val acc to 0.7663
+{"fold": 2, "epoch": 4, "train_loss": 1.1935022990082187, "train_acc": 0.9177344601962922, "val_loss": 1.6602045616834697, "val_acc": 0.8417324979569599, "lr": 0.0009046039886902867}
+Fold 2 epoch 4: improved val acc to 0.8417
+{"fold": 2, "epoch": 5, "train_loss": 1.1294916680360958, "train_acc": 0.9333424209378408, "val_loss": 1.365346115507699, "val_acc": 0.8907654590029964, "lr": 0.0008646198293969955}
+Fold 2 epoch 5: improved val acc to 0.8908
+{"fold": 2, "epoch": 6, "train_loss": 1.0709830144239485, "train_acc": 0.9511995637949836, "val_loss": 1.2001453861167988, "val_acc": 0.9196404249523291, "lr": 0.0008188932828794708}
+Fold 2 epoch 6: improved val acc to 0.9196
+{"fold": 2, "epoch": 7, "train_loss": 1.0406647122413277, "train_acc": 0.9563113413304253, "val_loss": 1.1162994167714442, "val_acc": 0.9378915826750205, "lr": 0.000768145484092009}
+Fold 2 epoch 7: improved val acc to 0.9379
+{"fold": 2, "epoch": 8, "train_loss": 1.0153060732257015, "train_acc": 0.9619002181025081, "val_loss": 1.0712595886769785, "val_acc": 0.9517842549713974, "lr": 0.0007131767561367541}
+Fold 2 epoch 8: improved val acc to 0.9518
+{"fold": 2, "epoch": 9, "train_loss": 0.9894071038052716, "train_acc": 0.9665348964013086, "val_loss": 1.0415494177978586, "val_acc": 0.9594116044674476, "lr": 0.0006548539886902865}
+Fold 2 epoch 9: improved val acc to 0.9594
+{"fold": 2, "epoch": 10, "train_loss": 0.9675853569608999, "train_acc": 0.9728735005452562, "val_loss": 1.0193569989790223, "val_acc": 0.9662217379460637, "lr": 0.0005940969666355698}
+Fold 2 epoch 10: improved val acc to 0.9662
+{"fold": 2, "epoch": 11, "train_loss": 0.9549104038345645, "train_acc": 0.9742366412213741, "val_loss": 1.0003262977611789, "val_acc": 0.9684009806592209, "lr": 0.0005318638645048923}
+Fold 2 epoch 11: improved val acc to 0.9684
+{"fold": 2, "epoch": 12, "train_loss": 0.9281658811033617, "train_acc": 0.9805752453653217, "val_loss": 0.9833276694297011, "val_acc": 0.9711250340506674, "lr": 0.0004691361354951082}
+Fold 2 epoch 12: improved val acc to 0.9711
+{"fold": 2, "epoch": 13, "train_loss": 0.9209239699978344, "train_acc": 0.9807115594329335, "val_loss": 0.9693128477159946, "val_acc": 0.9733042767638246, "lr": 0.00040690303336443076}
+Fold 2 epoch 13: improved val acc to 0.9733
+{"fold": 2, "epoch": 14, "train_loss": 0.9090475269726345, "train_acc": 0.9840512540894221, "val_loss": 0.957846354444551, "val_acc": 0.9754835194769818, "lr": 0.0003461460113097141}
+Fold 2 epoch 14: improved val acc to 0.9755
+{"fold": 2, "epoch": 15, "train_loss": 0.8952069220782106, "train_acc": 0.987186477644493, "val_loss": 0.9482065779868604, "val_acc": 0.9773903568509943, "lr": 0.00028782324386324637}
+Fold 2 epoch 15: improved val acc to 0.9774
+{"fold": 2, "epoch": 16, "train_loss": 0.8918617883191374, "train_acc": 0.984664667393675, "val_loss": 0.940722606643868, "val_acc": 0.9787523835467176, "lr": 0.00023285451590799116}
+Fold 2 epoch 16: improved val acc to 0.9788
+{"fold": 2, "epoch": 17, "train_loss": 0.8842008572108353, "train_acc": 0.9882769901853872, "val_loss": 0.9345500826251114, "val_acc": 0.9784799782075728, "lr": 0.00018210671712052954}
+{"fold": 2, "epoch": 18, "train_loss": 0.8762428338031082, "train_acc": 0.9896401308615049, "val_loss": 0.9296341795942109, "val_acc": 0.9784799782075728, "lr": 0.0001363801706030051}
+{"fold": 2, "epoch": 19, "train_loss": 0.8730210520188967, "train_acc": 0.9901172300981461, "val_loss": 0.9254511732946005, "val_acc": 0.9787523835467176, "lr": 9.639601130971386e-05}
+{"fold": 2, "epoch": 20, "train_loss": 0.8682881660003828, "train_acc": 0.9907306434023991, "val_loss": 0.9226568009053872, "val_acc": 0.9787523835467176, "lr": 6.278481331809018e-05}
+{"fold": 2, "epoch": 21, "train_loss": 0.8649283208789846, "train_acc": 0.9922300981461287, "val_loss": 0.9203849956860045, "val_acc": 0.9790247888858622, "lr": 3.607664529881847e-05}
+Fold 2 epoch 21: improved val acc to 0.9790
+{"fold": 2, "epoch": 22, "train_loss": 0.8645095094599666, "train_acc": 0.9918893129770993, "val_loss": 0.9186415021538378, "val_acc": 0.9795695995641515, "lr": 1.669271101624884e-05}
+Fold 2 epoch 22: improved val acc to 0.9796
+{"fold": 2, "epoch": 23, "train_loss": 0.8630784623235497, "train_acc": 0.9922300981461287, "val_loss": 0.917291902320257, "val_acc": 0.9798420049032961, "lr": 4.938706693418358e-06}
+Fold 2 epoch 23: improved val acc to 0.9798
+{"fold": 2, "epoch": 24, "train_loss": 0.862335354577234, "train_acc": 0.9937295528898582, "val_loss": 0.91627485742039, "val_acc": 0.9792971942250068, "lr": 1e-06}
+Saved best model for fold 2 to weights/effnet_b4_baseline_fold2.pth
+Starting fold 3
+{"fold": 3, "epoch": 0, "train_loss": 2.6433307118348233, "train_acc": 0.47846237731733915, "val_loss": 4.976892940614789, "val_acc": 0.060490463215258854, "lr": 0.0009960612933065818}
+Fold 3 epoch 0: improved val acc to 0.0605
+{"fold": 3, "epoch": 1, "train_loss": 1.6652848101754225, "train_acc": 0.7596101417666303, "val_loss": 4.110119148041312, "val_acc": 0.3814713896457766, "lr": 0.0009843072889837514}
+Fold 3 epoch 1: improved val acc to 0.3815
+{"fold": 3, "epoch": 2, "train_loss": 1.4277256423020441, "train_acc": 0.840717011995638, "val_loss": 3.0021169498765827, "val_acc": 0.6087193460490463, "lr": 0.000964923354701182}
+Fold 3 epoch 2: improved val acc to 0.6087
+{"fold": 3, "epoch": 3, "train_loss": 1.291075785131465, "train_acc": 0.8898582333696837, "val_loss": 2.249432270013669, "val_acc": 0.7174386920980926, "lr": 0.0009382151866819102}
+Fold 3 epoch 3: improved val acc to 0.7174
+{"fold": 3, "epoch": 4, "train_loss": 1.1880247041079315, "train_acc": 0.9182797164667393, "val_loss": 1.7745391870389517, "val_acc": 0.7983651226158038, "lr": 0.0009046039886902867}
+Fold 3 epoch 4: improved val acc to 0.7984
+{"fold": 3, "epoch": 5, "train_loss": 1.1275730772002832, "train_acc": 0.9380452562704471, "val_loss": 1.4551114352587458, "val_acc": 0.8583106267029973, "lr": 0.0008646198293969955}
+Fold 3 epoch 5: improved val acc to 0.8583
+{"fold": 3, "epoch": 6, "train_loss": 1.092590265406647, "train_acc": 0.9430888767720829, "val_loss": 1.2622999775961894, "val_acc": 0.9005449591280654, "lr": 0.0008188932828794708}
+Fold 3 epoch 6: improved val acc to 0.9005
+{"fold": 3, "epoch": 7, "train_loss": 1.04132286464895, "train_acc": 0.9556979280261723, "val_loss": 1.1456286065260137, "val_acc": 0.9286103542234332, "lr": 0.000768145484092009}
+Fold 3 epoch 7: improved val acc to 0.9286
+{"fold": 3, "epoch": 8, "train_loss": 1.0167371695018257, "train_acc": 0.9601962922573609, "val_loss": 1.082275233801444, "val_acc": 0.9452316076294278, "lr": 0.0007131767561367541}
+Fold 3 epoch 8: improved val acc to 0.9452
+{"fold": 3, "epoch": 9, "train_loss": 0.9952037548290864, "train_acc": 0.9678298800436205, "val_loss": 1.046226314303011, "val_acc": 0.9561307901907357, "lr": 0.0006548539886902865}
+Fold 3 epoch 9: improved val acc to 0.9561
+{"fold": 3, "epoch": 10, "train_loss": 0.9725735551528348, "train_acc": 0.9721237731733915, "val_loss": 1.0222465128924607, "val_acc": 0.9615803814713897, "lr": 0.0005940969666355698}
+Fold 3 epoch 10: improved val acc to 0.9616
+{"fold": 3, "epoch": 11, "train_loss": 0.9503199648571118, "train_acc": 0.9765539803707742, "val_loss": 1.003334196062114, "val_acc": 0.9634877384196185, "lr": 0.0005318638645048923}
+Fold 3 epoch 11: improved val acc to 0.9635
+{"fold": 3, "epoch": 12, "train_loss": 0.9364369910701931, "train_acc": 0.9786668484187568, "val_loss": 0.9877064747771386, "val_acc": 0.9686648501362398, "lr": 0.0004691361354951082}
+Fold 3 epoch 12: improved val acc to 0.9687
+{"fold": 3, "epoch": 13, "train_loss": 0.921375670505844, "train_acc": 0.9806434023991276, "val_loss": 0.9756263011158, "val_acc": 0.9713896457765667, "lr": 0.00040690303336443076}
+Fold 3 epoch 13: improved val acc to 0.9714
+{"fold": 3, "epoch": 14, "train_loss": 0.911030261181173, "train_acc": 0.9824836423118866, "val_loss": 0.964836756052698, "val_acc": 0.9743869209809264, "lr": 0.0003461460113097141}
+Fold 3 epoch 14: improved val acc to 0.9744
+{"fold": 3, "epoch": 15, "train_loss": 0.898790587580711, "train_acc": 0.9852099236641222, "val_loss": 0.9560146164179498, "val_acc": 0.9741144414168937, "lr": 0.00028782324386324637}
+{"fold": 3, "epoch": 16, "train_loss": 0.8912393170588669, "train_acc": 0.9880043620501636, "val_loss": 0.9484865817776817, "val_acc": 0.9741144414168937, "lr": 0.00023285451590799116}
+{"fold": 3, "epoch": 17, "train_loss": 0.8810595871317998, "train_acc": 0.9890948745910578, "val_loss": 0.9425509158532042, "val_acc": 0.9749318801089918, "lr": 0.00018210671712052954}
+Fold 3 epoch 17: improved val acc to 0.9749
+{"fold": 3, "epoch": 18, "train_loss": 0.8782958270029257, "train_acc": 0.9895038167938931, "val_loss": 0.9378366456369613, "val_acc": 0.9752043596730245, "lr": 0.0001363801706030051}
+Fold 3 epoch 18: improved val acc to 0.9752
+{"fold": 3, "epoch": 19, "train_loss": 0.8728988623671079, "train_acc": 0.9907306434023991, "val_loss": 0.9339057951597167, "val_acc": 0.973841961852861, "lr": 9.639601130971386e-05}
+{"fold": 3, "epoch": 20, "train_loss": 0.8707533249288245, "train_acc": 0.9907306434023991, "val_loss": 0.9310774463723726, "val_acc": 0.9732970027247957, "lr": 6.278481331809018e-05}
+{"fold": 3, "epoch": 21, "train_loss": 0.8666607915640138, "train_acc": 0.990798800436205, "val_loss": 0.9290170945653473, "val_acc": 0.9724795640326975, "lr": 3.607664529881847e-05}
+{"fold": 3, "epoch": 22, "train_loss": 0.8658324470306821, "train_acc": 0.9920937840785169, "val_loss": 0.9275495041618556, "val_acc": 0.9727520435967303, "lr": 1.669271101624884e-05}
+{"fold": 3, "epoch": 23, "train_loss": 0.8631732740085024, "train_acc": 0.9928435114503816, "val_loss": 0.9266457551181804, "val_acc": 0.9735694822888283, "lr": 4.938706693418358e-06}
+{"fold": 3, "epoch": 24, "train_loss": 0.8624715933752944, "train_acc": 0.9937295528898582, "val_loss": 0.9261190325102949, "val_acc": 0.9732970027247957, "lr": 1e-06}
+Saved best model for fold 3 to weights/effnet_b4_baseline_fold3.pth
+Starting fold 4
+{"fold": 4, "epoch": 0, "train_loss": 2.6578325378985803, "train_acc": 0.4693974918211559, "val_loss": 4.918133419670916, "val_acc": 0.04577656675749319, "lr": 0.0009960612933065818}
+Fold 4 epoch 0: improved val acc to 0.0458
+{"fold": 4, "epoch": 1, "train_loss": 1.6608658732608725, "train_acc": 0.7644492911668485, "val_loss": 4.038831735241965, "val_acc": 0.36049046321525885, "lr": 0.0009843072889837514}
+Fold 4 epoch 1: improved val acc to 0.3605
+{"fold": 4, "epoch": 2, "train_loss": 1.411912378204038, "train_acc": 0.8456243184296619, "val_loss": 2.9599808685136426, "val_acc": 0.6313351498637603, "lr": 0.000964923354701182}
+Fold 4 epoch 2: improved val acc to 0.6313
+{"fold": 4, "epoch": 3, "train_loss": 1.2774799401133505, "train_acc": 0.889108505997819, "val_loss": 2.1934048525319114, "val_acc": 0.753133514986376, "lr": 0.0009382151866819102}
+Fold 4 epoch 3: improved val acc to 0.7531
+{"fold": 4, "epoch": 4, "train_loss": 1.1821101576317357, "train_acc": 0.920324427480916, "val_loss": 1.7071592757097707, "val_acc": 0.8307901907356948, "lr": 0.0009046039886902867}
+Fold 4 epoch 4: improved val acc to 0.8308
+{"fold": 4, "epoch": 5, "train_loss": 1.1296459206317997, "train_acc": 0.9361368593238822, "val_loss": 1.4080167736604363, "val_acc": 0.8782016348773842, "lr": 0.0008646198293969955}
+Fold 4 epoch 5: improved val acc to 0.8782
+{"fold": 4, "epoch": 6, "train_loss": 1.0773577986522744, "train_acc": 0.9505861504907307, "val_loss": 1.2387864362316496, "val_acc": 0.9024523160762943, "lr": 0.0008188932828794708}
+Fold 4 epoch 6: improved val acc to 0.9025
+{"fold": 4, "epoch": 7, "train_loss": 1.0472770163641112, "train_acc": 0.9542666303162486, "val_loss": 1.1389027036178339, "val_acc": 0.9321525885558584, "lr": 0.000768145484092009}
+Fold 4 epoch 7: improved val acc to 0.9322
+{"fold": 4, "epoch": 8, "train_loss": 1.0161979950501328, "train_acc": 0.9632633587786259, "val_loss": 1.08162457653872, "val_acc": 0.9460490463215259, "lr": 0.0007131767561367541}
+Fold 4 epoch 8: improved val acc to 0.9460
+{"fold": 4, "epoch": 9, "train_loss": 0.9951424600643836, "train_acc": 0.9673527808069793, "val_loss": 1.0466800777723744, "val_acc": 0.9564032697547684, "lr": 0.0006548539886902865}
+Fold 4 epoch 9: improved val acc to 0.9564
+{"fold": 4, "epoch": 10, "train_loss": 0.9641494134130238, "train_acc": 0.9737595419847328, "val_loss": 1.0227232262938808, "val_acc": 0.9621253405994551, "lr": 0.0005940969666355698}
+Fold 4 epoch 10: improved val acc to 0.9621
+{"fold": 4, "epoch": 11, "train_loss": 0.9528011435900806, "train_acc": 0.9747818974918212, "val_loss": 1.0046140178347804, "val_acc": 0.9673024523160763, "lr": 0.0005318638645048923}
+Fold 4 epoch 11: improved val acc to 0.9673
+{"fold": 4, "epoch": 12, "train_loss": 0.9332977110192976, "train_acc": 0.979757360959651, "val_loss": 0.9904852947032419, "val_acc": 0.9686648501362398, "lr": 0.0004691361354951082}
+Fold 4 epoch 12: improved val acc to 0.9687
+{"fold": 4, "epoch": 13, "train_loss": 0.9244637976165946, "train_acc": 0.9807797164667393, "val_loss": 0.9785028036024005, "val_acc": 0.9705722070844687, "lr": 0.00040690303336443076}
+Fold 4 epoch 13: improved val acc to 0.9706
+{"fold": 4, "epoch": 14, "train_loss": 0.9098126950024779, "train_acc": 0.9833696837513631, "val_loss": 0.9683282631944246, "val_acc": 0.9708446866485013, "lr": 0.0003461460113097141}
+Fold 4 epoch 14: improved val acc to 0.9708
+{"fold": 4, "epoch": 15, "train_loss": 0.8971830273662554, "train_acc": 0.9847328244274809, "val_loss": 0.9590388060265731, "val_acc": 0.9735694822888283, "lr": 0.00028782324386324637}
+Fold 4 epoch 15: improved val acc to 0.9736
+{"fold": 4, "epoch": 16, "train_loss": 0.8893061949746559, "train_acc": 0.9872546346782988, "val_loss": 0.9518481064232559, "val_acc": 0.9746594005449591, "lr": 0.00023285451590799116}
+Fold 4 epoch 16: improved val acc to 0.9747
+{"fold": 4, "epoch": 17, "train_loss": 0.8811342486118412, "train_acc": 0.9892311886586695, "val_loss": 0.9465284331617952, "val_acc": 0.9752043596730245, "lr": 0.00018210671712052954}
+Fold 4 epoch 17: improved val acc to 0.9752
+{"fold": 4, "epoch": 18, "train_loss": 0.8750617231771496, "train_acc": 0.9903217011995638, "val_loss": 0.9420651617102143, "val_acc": 0.9752043596730245, "lr": 0.0001363801706030051}
+{"fold": 4, "epoch": 19, "train_loss": 0.8731476471494303, "train_acc": 0.9909351145038168, "val_loss": 0.9377502963718342, "val_acc": 0.9754768392370572, "lr": 9.639601130971386e-05}
+Fold 4 epoch 19: improved val acc to 0.9755
+{"fold": 4, "epoch": 20, "train_loss": 0.8693545171452712, "train_acc": 0.9914122137404581, "val_loss": 0.9341505082491633, "val_acc": 0.9762942779291554, "lr": 6.278481331809018e-05}
+Fold 4 epoch 20: improved val acc to 0.9763
+{"fold": 4, "epoch": 21, "train_loss": 0.8663622601731653, "train_acc": 0.9919574700109052, "val_loss": 0.93134806071705, "val_acc": 0.9760217983651226, "lr": 3.607664529881847e-05}
+{"fold": 4, "epoch": 22, "train_loss": 0.8647101721690811, "train_acc": 0.9915485278080698, "val_loss": 0.9288126453391863, "val_acc": 0.97574931880109, "lr": 1.669271101624884e-05}
+{"fold": 4, "epoch": 23, "train_loss": 0.8636269220349053, "train_acc": 0.9924345692475464, "val_loss": 0.9268926756908199, "val_acc": 0.97574931880109, "lr": 4.938706693418358e-06}
+{"fold": 4, "epoch": 24, "train_loss": 0.862384745312881, "train_acc": 0.9928435114503816, "val_loss": 0.9254785519854574, "val_acc": 0.97574931880109, "lr": 1e-06}
+Saved best model for fold 4 to weights/effnet_b4_baseline_fold4.pth
+Saved OOF predictions to oof/effnet_b4_baseline_oof.npy
+CV Accuracy: 0.9777
+Logged experiment entry for effnet_b4_baseline to logs/experiment_results.jsonl

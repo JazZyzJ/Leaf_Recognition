@@ -8,8 +8,8 @@ if [[ -n "${1:-}" && "${1}" == */ ]]; then
     DEVICE=${3:-cuda}
 else
     # First arg is full path or default
-    CONFIG=${1:-configs/resnet50d_baseline.yaml}
-    DEVICE=${2:-cuda}
+CONFIG=${1:-configs/resnet50d_baseline.yaml}
+DEVICE=${2:-cuda}
 fi
 LOG_PATH=${LOG_PATH:-logs/experiment_results.jsonl}
 ADDITIONAL_LOG_ARGS=()

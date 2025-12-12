@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """
 Download pretrained model weights to local cache.
 This script should be run in an environment with internet access.
