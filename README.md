@@ -17,6 +17,8 @@ pip install -r requirements.txt
 python src/train.py --config configs/resnet50d_baseline.yaml --device cuda
 # EfficientNet-B4 (EMA enabled in config by default)
 python src/train.py --config configs/effnet_b4.yaml --device cuda
+# ResNet200d stronger backbone
+python src/train.py --config configs/resnet200d.yaml --device cuda
 ```
 
 Key artifacts are written to `logs/`, `weights/`, `oof/`, and the augmented `train_folds.csv` file used
@@ -29,10 +31,17 @@ Average fold predictions and generate a submission:
 
 ```bash
 python src/inference.py --config configs/resnet50d_baseline.yaml --device cuda
+# Multi-model ensemble with horizontal-flip TTA
+python src/inference.py \
+  --config configs/resnet50d_baseline.yaml \
+  --config configs/effnet_b4.yaml \
+  --tta hflip \
+  --device cuda \
+  --output_name resnet50d_effnetb4_ens.csv
 ```
 
 Outputs are saved under `submissions/`. Custom weight files can be provided via `--weights_pattern` or a
-comma-separated list passed to the same flag.
+comma-separated list passed to the same flag; repeat `--config` and `--weights-pattern` to ensemble different experiments.
 
 ## Experiment logging
 
