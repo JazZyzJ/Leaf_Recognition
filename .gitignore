@@ -1,3 +1,5 @@
 weights/
 
-src/__pycache__/
+submissions/
+
+src/__pycache__/*.pyc

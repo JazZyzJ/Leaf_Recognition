@@ -49,8 +49,10 @@ class LeafDataset(Dataset):
         else:
             image = torch.from_numpy(image.transpose(2, 0, 1)).float() / 255.0
 
-        label = None
-        if not self.is_test:
+        if self.is_test:
+            # Return dummy label -1 for test mode to avoid None in collate
+            label = -1
+        else:
             label = int(row[self.label_col])
         return image, label
 
