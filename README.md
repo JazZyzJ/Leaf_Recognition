@@ -21,7 +21,7 @@ python src/train.py --config configs/effnet_b4.yaml --device cuda
 
 Key artifacts are written to `logs/`, `weights/`, `oof/`, and the augmented `train_folds.csv` file used
 for reproducibility.
-Configs can toggle extras such as Exponential Moving Average (see `training.ema.*` fields).
+Configs can toggle extras such as Exponential Moving Average (`training.ema.*`) and MixUp/CutMix (`training.mixup.*`).
 
 ## Inference
 

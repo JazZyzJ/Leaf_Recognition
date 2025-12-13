@@ -17,6 +17,8 @@ from sklearn.preprocessing import LabelEncoder
 from torch import amp
 from torch.utils.data import DataLoader
 from timm.utils import ModelEmaV2
+from timm.data import Mixup
+from timm.loss import SoftTargetCrossEntropy
 
 from dataset import LeafDataset
 from models import create_model
@@ -119,7 +121,7 @@ def build_scheduler(
     optimizer: torch.optim.Optimizer,
     config: Dict,
     steps_per_epoch: int,
-) -> Tuple[torch.optim.lr_scheduler._LRScheduler | None, bool]:
+    ) -> Tuple[torch.optim.lr_scheduler._LRScheduler | None, bool]:
     training_cfg = config["training"]
     scheduler_name = training_cfg.get("scheduler", "cosine").lower()
     if scheduler_name == "cosine":
@@ -139,6 +141,27 @@ def build_scheduler(
     return None, False
 
 
+def build_mixup_fn(config: Dict, num_classes: int) -> Mixup | None:
+    mix_cfg = config["training"].get("mixup", {})
+    if not mix_cfg.get("enabled", False):
+        return None
+
+    mixup_alpha = mix_cfg.get("mixup_alpha", 0.0)
+    cutmix_alpha = mix_cfg.get("cutmix_alpha", 0.0)
+    if mixup_alpha <= 0.0 and cutmix_alpha <= 0.0:
+        return None
+
+    return Mixup(
+        mixup_alpha=mixup_alpha,
+        cutmix_alpha=cutmix_alpha,
+        prob=mix_cfg.get("prob", 1.0),
+        switch_prob=mix_cfg.get("switch_prob", 0.5),
+        mode=mix_cfg.get("mode", "batch"),
+        label_smoothing=mix_cfg.get("label_smoothing", 0.0),
+        num_classes=num_classes,
+    )
+
+
 def train_one_epoch(
     model: nn.Module,
     loader: DataLoader,
@@ -151,6 +174,7 @@ def train_one_epoch(
     grad_clip: float | None = None,
     use_amp: bool = True,
     ema: ModelEmaV2 | None = None,
+    mixup_fn: Mixup | None = None,
 ) -> Tuple[float, float]:
     model.train()
     loss_meter = AverageMeter()
@@ -160,6 +184,10 @@ def train_one_epoch(
     for images, targets in loader:
         images = images.to(device, non_blocking=True)
         targets = targets.to(device, non_blocking=True)
+        targets_for_metrics = targets.clone()
+
+        if mixup_fn is not None:
+            images, targets = mixup_fn(images, targets)
 
         with amp.autocast(device_type=device.type, enabled=use_amp and device.type == "cuda"):
             outputs = model(images)
@@ -185,7 +213,7 @@ def train_one_epoch(
         if scheduler is not None and scheduler_step_per_batch:
             scheduler.step()
 
-        acc_value = accuracy(outputs, targets)
+        acc_value = accuracy(outputs, targets_for_metrics)
         loss_meter.update(loss.item(), images.size(0))
         acc_meter.update(acc_value, images.size(0))
 
@@ -247,6 +275,7 @@ def run_training(config_path: str, device_override: str | None = None) -> None:
         train_df.to_csv(folds_csv, index=False)
 
     num_classes = train_df["label_id"].nunique()
+    mixup_fn = build_mixup_fn(config, num_classes)
     logs_dir = dirs.get("logs_dir", Path("logs"))
     save_json(
         Path(logs_dir) / f"{experiment_name}_label_mapping.json",
@@ -285,15 +314,19 @@ def run_training(config_path: str, device_override: str | None = None) -> None:
         optimizer = build_optimizer(model, config)
         scheduler, step_per_batch = build_scheduler(optimizer, config, steps_per_epoch=len(train_loader))
 
-        criterion = nn.CrossEntropyLoss(label_smoothing=config["training"].get("label_smoothing", 0.0))
+        if mixup_fn is not None:
+            train_criterion = SoftTargetCrossEntropy()
+        else:
+            train_criterion = nn.CrossEntropyLoss(label_smoothing=config["training"].get("label_smoothing", 0.0))
+        val_criterion = nn.CrossEntropyLoss()
         amp_enabled = config["training"].get("amp", True) and device.type == "cuda"
-        scaler = amp.GradScaler(device=device.type, enabled=amp_enabled)
+        scaler = amp.GradScaler(device_type=device.type, enabled=amp_enabled)
         grad_clip = config["training"].get("grad_clip")
         ema_cfg = config["training"].get("ema", {})
         ema: ModelEmaV2 | None = None
         if ema_cfg.get("enabled", False):
             ema_decay = ema_cfg.get("decay", 0.9998)
-            ema_device = device
+            ema_device = ema_cfg.get("device", "")
             ema = ModelEmaV2(model, decay=ema_decay, device=ema_device)
 
         best_acc = 0.0
@@ -305,7 +338,7 @@ def run_training(config_path: str, device_override: str | None = None) -> None:
             train_loss, train_acc = train_one_epoch(
                 model,
                 train_loader,
-                criterion,
+                train_criterion,
                 optimizer,
                 device,
                 scaler,
@@ -314,10 +347,11 @@ def run_training(config_path: str, device_override: str | None = None) -> None:
                 grad_clip=grad_clip,
                 use_amp=scaler.is_enabled(),
                 ema=ema,
+                mixup_fn=mixup_fn,
             )
 
             eval_model = ema.module if ema is not None else model
-            val_loss, val_acc, val_probs = validate(eval_model, valid_loader, criterion, device)
+            val_loss, val_acc, val_probs = validate(eval_model, valid_loader, val_criterion, device)
             if scheduler is not None and not step_per_batch:
                 scheduler.step()
 
