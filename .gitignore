@@ -1,1 +1,1 @@
-ML_project/weights/*.pth
+./weights/*/weights
