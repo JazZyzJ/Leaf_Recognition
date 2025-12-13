@@ -26,7 +26,7 @@ from utils import AverageMeter, accuracy, load_config, prepare_dirs, save_json, 
 
 IMAGENET_MEAN = (0.485, 0.456, 0.406)
 IMAGENET_STD = (0.229, 0.224, 0.225)
-
+device = torch.device("cuda")
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Train ResNet baseline for Leaf Classification")
@@ -320,13 +320,15 @@ def run_training(config_path: str, device_override: str | None = None) -> None:
             train_criterion = nn.CrossEntropyLoss(label_smoothing=config["training"].get("label_smoothing", 0.0))
         val_criterion = nn.CrossEntropyLoss()
         amp_enabled = config["training"].get("amp", True) and device.type == "cuda"
-        scaler = amp.GradScaler(device_type=device.type, enabled=amp_enabled)
+        scaler = amp.GradScaler(device=device.type, enabled=amp_enabled)
         grad_clip = config["training"].get("grad_clip")
         ema_cfg = config["training"].get("ema", {})
         ema: ModelEmaV2 | None = None
         if ema_cfg.get("enabled", False):
             ema_decay = ema_cfg.get("decay", 0.9998)
-            ema_device = ema_cfg.get("device", "")
+            ema_device_str = ema_cfg.get("device", "")
+            # Use None if device not specified or empty, which will use the same device as model
+            ema_device = None if not ema_device_str else torch.device(ema_device_str)
             ema = ModelEmaV2(model, decay=ema_decay, device=ema_device)
 
         best_acc = 0.0
