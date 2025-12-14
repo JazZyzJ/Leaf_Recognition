@@ -18,7 +18,7 @@ model:
 
 training:
   img_size: 512
-  batch_size: 24
+  batch_size: 8  # Reduced from 24 to avoid OOM
   num_workers: 4
   num_epochs: 25
   aug_desc: "RRC + flips + rotation"

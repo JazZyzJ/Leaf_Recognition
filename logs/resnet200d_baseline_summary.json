@@ -1,0 +1,5 @@
+{
+  "experiment": "resnet200d_baseline",
+  "cv_accuracy": 0.9768975099438784,
+  "folds": 5
+}
