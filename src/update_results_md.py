@@ -40,11 +40,13 @@ def deduplicate_entries(entries: List[Dict], keep_all: bool) -> List[Dict]:
     if keep_all:
         return sorted(entries, key=lambda x: x["timestamp"], reverse=True)
 
-    latest: Dict[str, Dict] = {}
+    latest: Dict[tuple, Dict] = {}
     for entry in entries:
-        exp_name = entry["experiment"]
-        if exp_name not in latest or entry["timestamp"] > latest[exp_name]["timestamp"]:
-            latest[exp_name] = entry
+        # Treat different notes as different methods; key combines experiment and notes
+        notes = entry.get("notes", "") or ""
+        key = (entry["experiment"], notes)
+        if key not in latest or entry["timestamp"] > latest[key]["timestamp"]:
+            latest[key] = entry
     return sorted(latest.values(), key=lambda x: x["timestamp"], reverse=True)
 
 

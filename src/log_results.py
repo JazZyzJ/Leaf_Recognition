@@ -4,18 +4,30 @@ import argparse
 import json
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from utils import load_config
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Log experiment results for later reporting.")
-    parser.add_argument("--config", required=True, help="Config used for the run.")
+    parser.add_argument(
+        "--config",
+        action="append",
+        required=True,
+        help="Config file(s). Repeat flag to log an ensemble (same as inference).",
+    )
+    parser.add_argument(
+        "--configs",
+        dest="config",
+        action="append",
+        help="Alias for --config to match inference-style multi-config usage.",
+    )
     parser.add_argument(
         "--summary",
+        action="append",
         required=False,
-        help="Path to the summary JSON generated after training.",
+        help="Summary JSON per config (same order as --config). If one is provided, it is reused.",
     )
     parser.add_argument(
         "--cv",
@@ -39,33 +51,76 @@ def load_summary(summary_path: Path) -> Dict[str, Any]:
         return json.load(f)
 
 
-def build_entry(config: Dict[str, Any], args: argparse.Namespace, summary: Optional[Dict[str, Any]]) -> Dict[str, Any]:
-    training_cfg = config["training"]
-    experiment_cfg = config["experiment"]
-    model_cfg = config["model"]
+def build_entry(
+    configs: List[Dict[str, Any]],
+    args: argparse.Namespace,
+    summaries: List[Optional[Dict[str, Any]]],
+) -> Dict[str, Any]:
+    multi = len(configs) > 1
 
-    cv_acc = args.cv
-    if cv_acc is None and summary:
-        cv_acc = summary.get("cv_accuracy")
+    experiments = [cfg["experiment"]["name"] for cfg in configs]
+    model_names = [cfg["model"]["model_name"] for cfg in configs]
+    img_sizes = [cfg["training"]["img_size"] for cfg in configs]
+    aug_notes = [cfg["training"].get("aug_desc", "") for cfg in configs]
+    epochs = [cfg["training"]["num_epochs"] for cfg in configs]
+    batch_sizes = [cfg["training"]["batch_size"] for cfg in configs]
+
+    cv_list: List[float] = []
+    for summary in summaries:
+        if summary is not None and "cv_accuracy" in summary:
+            cv_list.append(summary["cv_accuracy"])
+
+    cv_acc: Optional[float] = args.cv
+    if cv_acc is None:
+        if len(cv_list) == 1:
+            cv_acc = cv_list[0]
+        elif len(cv_list) > 1:
+            cv_acc = sum(cv_list) / len(cv_list)
 
     if cv_acc is None:
-        raise ValueError("CV accuracy is not provided. Pass --cv or provide a valid summary file.")
+        raise ValueError("CV accuracy is not provided. Pass --cv or provide valid summary files.")
+
+    summary_paths: List[Optional[str]] = []
+    for path in (args.summary or []):
+        summary_paths.append(path)
+    if summary_paths and len(summary_paths) == 1 and len(configs) > 1:
+        # Reuse the single provided summary path for all configs if only one given
+        summary_paths = summary_paths * len(configs)
+    while len(summary_paths) < len(configs):
+        summary_paths.append(None)
 
     entry = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
-        "experiment": experiment_cfg["name"],
-        "model_name": model_cfg["model_name"],
-        "img_size": training_cfg["img_size"],
-        "aug_notes": training_cfg.get("aug_desc", ""),
-        "epochs": training_cfg["num_epochs"],
-        "batch_size": training_cfg["batch_size"],
+        "experiment": "+".join(experiments) if multi else experiments[0],
+        "model_name": "+".join(model_names) if multi else model_names[0],
+        "img_size": img_sizes if multi else img_sizes[0],
+        "aug_notes": " | ".join(aug_notes) if multi else aug_notes[0],
+        "epochs": epochs if multi else epochs[0],
+        "batch_size": batch_sizes if multi else batch_sizes[0],
         "cv_acc": cv_acc,
         "lb_public": args.lb_public,
         "lb_private": args.lb_private,
         "notes": args.notes,
-        "summary_path": str(args.summary) if args.summary else None,
-        "config_path": args.config,
+        "summary_path": summary_paths if multi else summary_paths[0],
+        "config_path": args.config if multi else args.config[0],
     }
+
+    if multi:
+        entry["per_config"] = [
+            {
+                "experiment": experiments[i],
+                "model_name": model_names[i],
+                "img_size": img_sizes[i],
+                "aug_notes": aug_notes[i],
+                "epochs": epochs[i],
+                "batch_size": batch_sizes[i],
+                "summary_path": summary_paths[i],
+                "config_path": args.config[i],
+            }
+            for i in range(len(configs))
+        ]
+        entry["cv_components"] = cv_list if cv_list else None
+
     return entry
 
 
@@ -77,17 +132,31 @@ def append_entry(log_path: Path, entry: Dict[str, Any]) -> None:
 
 def main() -> None:
     args = parse_args()
-    config = load_config(args.config)
-    summary = None
-    if args.summary:
-        summary = load_summary(Path(args.summary))
-    elif args.cv is None:
-        summary_guess = Path("logs") / f"{config['experiment']['name']}_summary.json"
-        if summary_guess.exists():
-            summary = load_summary(summary_guess)
-            args.summary = str(summary_guess)
+    config_paths = args.config
+    configs: List[Dict[str, Any]] = [load_config(cfg_path) for cfg_path in config_paths]
 
-    entry = build_entry(config, args, summary)
+    summaries: List[Optional[Dict[str, Any]]] = []
+    provided_summaries = args.summary or []
+
+    for idx, cfg in enumerate(configs):
+        summary_obj: Optional[Dict[str, Any]] = None
+        summary_path: Optional[str] = None
+        if provided_summaries:
+            if len(provided_summaries) == 1:
+                summary_path = provided_summaries[0]
+            elif idx < len(provided_summaries):
+                summary_path = provided_summaries[idx]
+        if summary_path:
+            summary_obj = load_summary(Path(summary_path))
+        elif args.cv is None:
+            summary_guess = Path("logs") / f"{cfg['experiment']['name']}_summary.json"
+            if summary_guess.exists():
+                summary_obj = load_summary(summary_guess)
+                if not provided_summaries:
+                    provided_summaries.append(str(summary_guess))
+        summaries.append(summary_obj)
+
+    entry = build_entry(configs, args, summaries)
     append_entry(Path(args.log_path), entry)
     print(f"Logged experiment entry for {entry['experiment']} to {args.log_path}")
 
