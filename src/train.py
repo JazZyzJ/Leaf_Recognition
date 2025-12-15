@@ -19,6 +19,7 @@ from torch.utils.data import DataLoader
 from timm.utils import ModelEmaV2
 from timm.data import Mixup
 from timm.loss import SoftTargetCrossEntropy
+import os
 
 from dataset import LeafDataset
 from models import create_model
@@ -32,6 +33,11 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Train ResNet baseline for Leaf Classification")
     parser.add_argument("--config", required=True, help="Path to YAML config file")
     parser.add_argument("--device", default=None, help="Override device")
+    parser.add_argument(
+        "--resume_dir",
+        default=None,
+        help="Directory containing fold checkpoints to resume/fine-tune (expects *fold{f}.pth).",
+    )
     return parser.parse_args()
 
 
@@ -248,7 +254,7 @@ def validate(
     return loss_meter.avg, acc_meter.avg, fold_probs
 
 
-def run_training(config_path: str, device_override: str | None = None) -> None:
+def run_training(config_path: str, device_override: str | None = None, resume_dir: str | None = None) -> None:
     config = load_config(config_path)
     seed = config["experiment"].get("seed", 42)
     set_seed(seed)
@@ -309,6 +315,14 @@ def run_training(config_path: str, device_override: str | None = None) -> None:
             num_classes=num_classes,
             pretrained=config["model"].get("pretrained", True),
         )
+        if resume_dir:
+            resume_path = Path(resume_dir) / f"{config['experiment']['name']}_fold{fold}.pth"
+            if resume_path.exists():
+                state = torch.load(resume_path, map_location="cpu")
+                model.load_state_dict(state)
+                print(f"Resumed fold {fold} weights from {resume_path}")
+            else:
+                print(f"Resume path not found for fold {fold}: {resume_path}")
         model.to(device)
 
         optimizer = build_optimizer(model, config)
@@ -394,7 +408,7 @@ def run_training(config_path: str, device_override: str | None = None) -> None:
 
 def main() -> None:
     args = parse_args()
-    run_training(args.config, device_override=args.device)
+    run_training(args.config, device_override=args.device, resume_dir=args.resume_dir)
 
 
 if __name__ == "__main__":
