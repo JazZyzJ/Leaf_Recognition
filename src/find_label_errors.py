@@ -165,20 +165,53 @@ def main() -> None:
     )
     
     # Identify issues
-    # find_label_issues returns a DataFrame with boolean mask and quality scores
-    # actually, with return_indices_ranked_by, it returns indices. 
-    # Let's use the standard return to get the DataFrame which is more useful.
+    print(f"Cleanlab version: {cleanlab.__version__}")
+    
+    # In cleanlab 2.x, this returns a DataFrame. In 1.x, it might return a boolean mask.
+    # We will handle both cases.
     issues_info = find_label_issues(
         labels=labels,
         pred_probs=proms_ensemble,
         return_indices_ranked_by=None 
     )
     
-    # Merge Cleanlab results into train_df
-    train_df["is_label_issue"] = issues_info["is_label_issue"]
-    train_df["label_quality"] = issues_info["label_quality"]
-    train_df["given_label"] = issues_info["given_label"]
-    train_df["predicted_label"] = issues_info["predicted_label"]
+    # Check type
+    if isinstance(issues_info, pd.DataFrame):
+        print("Detailed issues found (Cleanlab 2.x+ detected).")
+        train_df["is_label_issue"] = issues_info["is_label_issue"]
+        train_df["label_quality"] = issues_info["label_quality"]
+        train_df["given_label"] = issues_info["given_label"]
+        train_df["predicted_label"] = issues_info["predicted_label"]
+    else:
+        print("Boolean mask found (Cleanlab 1.x or non-DataFrame return detected).")
+        # issues_info is likely a boolean mask
+        if not isinstance(issues_info, np.ndarray) or issues_info.dtype != bool:
+             # Fallback if it returned indices or something else, though return_indices_ranked_by=None usually means mask in 1.x
+             # If it is indices, convert to mask
+             if np.issubdtype(issues_info.dtype, np.integer):
+                 mask = np.zeros(len(labels), dtype=bool)
+                 mask[issues_info] = True
+                 issues_info = mask
+        
+        train_df["is_label_issue"] = issues_info
+        
+        # Manually compute quality scores if not provided
+        try:
+            from cleanlab.rank import get_label_quality_scores
+            scores = get_label_quality_scores(labels, proms_ensemble)
+            train_df["label_quality"] = scores
+        except ImportError:
+            # Fallback for even older versions or different API
+             train_df["label_quality"] = 0.5 # Dummy value
+        
+        train_df["given_label"] = labels
+        train_df["predicted_label"] = proms_ensemble.argmax(axis=1)
+
+    # Calculate basic confidence if needed for sorting manual review
+    if "label_quality" not in train_df.columns:
+         p_true = proms_ensemble[np.arange(len(labels)), labels]
+         train_df["label_quality"] = p_true
+
     
     # 4. Export Results
     out_dir = Path(args.out_dir)
