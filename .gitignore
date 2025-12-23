@@ -3,3 +3,11 @@ weights/
 submissions/
 
 src/__pycache__/*.pyc
+
+
+report/
+
+AGENTS.md
+
+TASK.md
+
