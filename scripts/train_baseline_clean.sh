@@ -25,10 +25,11 @@ for CONFIG in "${CONFIGS[@]}"; do
     echo "Creating clean config: $CLEAN_CONFIG"
     
     # Replace train_csv and update experiment name
-    # We use a temp file to be portable across BSD/GNU sed
+    # We use a more specific regex to avoid matching 'model_name'
     cat "$CONFIG" | \
-    sed "s/name: .*/name: ${BASE_NAME}_clean/" | \
+    sed "s/^  name: .*/  name: ${BASE_NAME}_clean/" | \
     sed "s/train_csv: .*/train_csv: $TRAIN_CLEAN_CSV/" > "$CLEAN_CONFIG"
+
 
     echo "Running training for $CLEAN_CONFIG..."
     python src/train.py --config "$CLEAN_CONFIG"
