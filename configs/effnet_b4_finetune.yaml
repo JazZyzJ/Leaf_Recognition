@@ -4,6 +4,7 @@ experiment:
   num_folds: 5
   output_dir: .
   save_folds_csv: train_folds_effnet_b4_finetune.csv
+  resume_from_experiment: effnet_b4_baseline
 
 data:
   train_csv: train.csv

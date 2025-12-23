@@ -1,0 +1,5 @@
+{
+  "experiment": "effnet_b4_ft_lr5e-5_e5",
+  "cv_accuracy": 0.9777148150166185,
+  "folds": 5
+}

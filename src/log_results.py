@@ -141,19 +141,23 @@ def main() -> None:
     for idx, cfg in enumerate(configs):
         summary_obj: Optional[Dict[str, Any]] = None
         summary_path: Optional[str] = None
+
         if provided_summaries:
             if len(provided_summaries) == 1:
                 summary_path = provided_summaries[0]
             elif idx < len(provided_summaries):
                 summary_path = provided_summaries[idx]
+
         if summary_path:
             summary_obj = load_summary(Path(summary_path))
         elif args.cv is None:
+            # Fallback: try default summary path logs/{experiment_name}_summary.json
             summary_guess = Path("logs") / f"{cfg['experiment']['name']}_summary.json"
             if summary_guess.exists():
                 summary_obj = load_summary(summary_guess)
                 if not provided_summaries:
                     provided_summaries.append(str(summary_guess))
+
         summaries.append(summary_obj)
 
     entry = build_entry(configs, args, summaries)

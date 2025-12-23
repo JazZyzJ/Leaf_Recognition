@@ -13,21 +13,21 @@ for LR in "${LRS[@]}"; do
   for EP in "${EPOCHS[@]}"; do
     TMP_CFG=$(mktemp /tmp/effb4_ft_XXXX.yaml)
     python - <<PY
-import yaml, copy
+import yaml
 from pathlib import Path
 base = yaml.safe_load(Path("${BASE_CONFIG}").read_text())
-exp_name = f"effnet_b4_ft_lr{LR}_e{EP}"
+exp_name = f"effnet_b4_ft_lr${LR}_e${EP}"
 base["experiment"]["name"] = exp_name
 base["experiment"]["save_folds_csv"] = f"train_folds_{exp_name}.csv"
-base["training"]["lr"] = float(${LR})
-base["training"]["num_epochs"] = int(${EP})
-base["training"]["t_max"] = int(${EP})
-base["training"]["aug_desc"] = f"Finetune lr={LR} ep={EP}"
+base["training"]["lr"] = float("${LR}")
+base["training"]["num_epochs"] = int("${EP}")
+base["training"]["t_max"] = int("${EP}")
+base["training"]["aug_desc"] = "Finetune lr=${LR} ep=${EP}"
 Path("${TMP_CFG}").write_text(yaml.safe_dump(base))
-print(TMP_CFG)
+print("${TMP_CFG}")
 PY
     echo "Running finetune LR=${LR}, epochs=${EP} (config: ${TMP_CFG})"
-    python src/train.py --config "${TMP_CFG}" --device "${DEVICE}" --resume_dir "${RESUME_DIR}"
+    # python src/train.py --config "${TMP_CFG}" --device "${DEVICE}" --resume_dir "${RESUME_DIR}"
     EXP_NAME=$(python - <<PY
 import yaml
 from pathlib import Path

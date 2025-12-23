@@ -299,6 +299,8 @@ def run_training(config_path: str, device_override: str | None = None, resume_di
     oof_preds = np.zeros((len(train_df), num_classes), dtype=np.float32)
     history: List[Dict] = []
 
+    resume_from_experiment = config["experiment"].get("resume_from_experiment")
+
     for fold in range(folds):
         print(f"Starting fold {fold}")
         train_subset = train_df[train_df["fold"] != fold].reset_index(drop=True)
@@ -316,7 +318,9 @@ def run_training(config_path: str, device_override: str | None = None, resume_di
             pretrained=config["model"].get("pretrained", True),
         )
         if resume_dir:
-            resume_path = Path(resume_dir) / f"{config['experiment']['name']}_fold{fold}.pth"
+            # If resume_from_experiment is set, use its experiment name for checkpoint filenames
+            resume_experiment_name = resume_from_experiment or config["experiment"]["name"]
+            resume_path = Path(resume_dir) / f"{resume_experiment_name}_fold{fold}.pth"
             if resume_path.exists():
                 state = torch.load(resume_path, map_location="cpu")
                 model.load_state_dict(state)
