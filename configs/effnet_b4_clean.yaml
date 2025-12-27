@@ -1,0 +1,50 @@
+experiment:
+  name: effnet_b4_clean
+  seed: 42
+  num_folds: 5
+  output_dir: .
+  save_folds_csv: train_folds_effnet_b4.csv
+
+data:
+  train_csv: train_clean.csv
+  test_csv: test.csv
+  image_root: .
+  image_col: image
+  label_col: label
+
+model:
+  model_name: tf_efficientnet_b4_ns
+  pretrained: true
+  checkpoint_path: weights/effnet_b4_baseline_fold_0.pth
+
+training:
+  img_size: 380
+  batch_size: 16
+  num_workers: 4
+  num_epochs: 25
+  aug_desc: "RRC + flips + rotation (380)"
+  lr: 0.001
+  min_lr: 1.0e-6
+  weight_decay: 0.0001
+  optimizer: adamw
+  scheduler: cosine
+  t_max: 25
+  label_smoothing: 0.0
+  grad_clip: 1.0
+  amp: true
+  ema:
+    enabled: true
+    decay: 0.9998
+  mixup:
+    enabled: true
+    mixup_alpha: 0.2
+    cutmix_alpha: 0.1
+    prob: 1.0
+    switch_prob: 0.5
+    label_smoothing: 0.05
+
+paths:
+  weights_dir: weights
+  logs_dir: logs
+  oof_dir: oof
+  submissions_dir: submissions
