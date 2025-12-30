@@ -1,0 +1,5 @@
+{
+  "experiment": "effnet_b4_clean_finetune",
+  "cv_accuracy": 0.9840600350569676,
+  "folds": 5
+}

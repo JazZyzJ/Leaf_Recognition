@@ -1,0 +1,52 @@
+experiment:
+  name: resnet200d_clean_finetune
+  seed: 42
+  num_folds: 5
+  output_dir: .
+  save_folds_csv: train_folds_resnet200d_clean_finetune.csv
+  resume_from_experiment: resnet200d_clean
+
+data:
+  train_csv: train_clean.csv
+  test_csv: test.csv
+  image_root: .
+  image_col: image
+  label_col: label
+
+model:
+  model_name: resnet200d
+  pretrained: false  # will resume from checkpoints
+
+training:
+  img_size: 512
+  batch_size: 8
+  num_workers: 4
+  num_epochs: 5
+  aug_desc: "Finetune from clean"
+  lr: 5.0e-5
+  min_lr: 1.0e-7
+  weight_decay: 0.0001
+  optimizer: adamw
+  scheduler: cosine
+  t_max: 5
+  label_smoothing: 0.05
+  grad_clip: 1.0
+  amp: true
+  ema:
+    enabled: true
+    decay: 0.9998
+  mixup:
+    enabled: false
+    mixup_alpha: 0.0
+    cutmix_alpha: 0.0
+    prob: 0.0
+    switch_prob: 0.0
+    label_smoothing: 0.0
+
+paths:
+  weights_dir: weights
+  logs_dir: logs
+  oof_dir: oof
+  submissions_dir: submissions
+
+
