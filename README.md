@@ -1,7 +1,7 @@
 # Leaf Classification Project
 
 PyTorch pipeline for the Kaggle "Classification of Leaves" competition. The repository provides
-data loading, K-fold training, inference/ensembling utilities, and the report source used for the coursework.
+data loading, K-fold training, inference/ensembling utilities.
 
 ## Environment
 
@@ -76,11 +76,7 @@ python src/update_results_md.py
 
 The script reads the JSONL log (keeping the latest run per experiment by default) and rebuilds the Markdown table.
 
-## Report
 
-The project report lives at `report/neurips_2023.tex`. It summarizes methodology, ablations, and leaderboard results.
-Figure placeholders are provided for training curves, ensembling comparisons, and backbone architectures.
-Update `results.md` and `logs/experiment_results.jsonl` before editing the report to keep metrics consistent.
 
 ### Automated remote run
 
@@ -106,8 +102,6 @@ The script accepts any config path, so it works for EfficientNet-B4 and future e
 classify-leaves/
 ├── configs/
 │   └── resnet50d_baseline.yaml
-├── report/
-│   └── neurips_2023.tex
 ├── src/
 │   ├── dataset.py
 │   ├── inference.py
