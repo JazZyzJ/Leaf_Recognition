@@ -1,7 +1,7 @@
 # Leaf Classification Project
 
-Baseline PyTorch pipeline for the Kaggle "Classification of Leaves" competition. The repository provides
-data loading, K-fold training, and inference utilities following the coursework requirements.
+PyTorch pipeline for the Kaggle "Classification of Leaves" competition. The repository provides
+data loading, K-fold training, inference/ensembling utilities, and the report source used for the coursework.
 
 ## Environment
 
@@ -23,7 +23,21 @@ python src/train.py --config configs/resnet200d.yaml --device cuda
 
 Key artifacts are written to `logs/`, `weights/`, `oof/`, and the augmented `train_folds.csv` file used
 for reproducibility.
-Configs can toggle extras such as Exponential Moving Average (`training.ema.*`) and MixUp/CutMix (`training.mixup.*`).
+Configs can toggle extras such as Exponential Moving Average (`training.ema.*`) and Mixup/CutMix (`training.mixup.*`).
+
+### Clean-data and fine-tuning configs
+
+```bash
+# Train on the cleaned dataset
+python src/train.py --config configs/effnet_b4_clean.yaml --device cuda
+python src/train.py --config configs/resnet50d_baseline_clean.yaml --device cuda
+python src/train.py --config configs/resnet200d_clean.yaml --device cuda
+
+# Low-LR fine-tuning from clean checkpoints
+python src/train.py --config configs/effnet_b4_clean_finetune.yaml --device cuda
+python src/train.py --config configs/resnet50d_baseline_clean_finetune.yaml --device cuda
+python src/train.py --config configs/resnet200d_clean_finetune.yaml --device cuda
+```
 
 ## Inference
 
@@ -40,7 +54,7 @@ python src/inference.py \
   --output_name resnet50d_effnetb4_ens.csv
 ```
 
-Outputs are saved under `submissions/`. Custom weight files can be provided via `--weights_pattern` or a
+Outputs are saved under `submissions/`. Custom weight files can be provided via `--weights-pattern` or a
 comma-separated list passed to the same flag; repeat `--config` and `--weights-pattern` to ensemble different experiments.
 
 ## Experiment logging
@@ -61,6 +75,12 @@ python src/update_results_md.py
 ```
 
 The script reads the JSONL log (keeping the latest run per experiment by default) and rebuilds the Markdown table.
+
+## Report
+
+The project report lives at `report/neurips_2023.tex`. It summarizes methodology, ablations, and leaderboard results.
+Figure placeholders are provided for training curves, ensembling comparisons, and backbone architectures.
+Update `results.md` and `logs/experiment_results.jsonl` before editing the report to keep metrics consistent.
 
 ### Automated remote run
 
@@ -86,6 +106,8 @@ The script accepts any config path, so it works for EfficientNet-B4 and future e
 classify-leaves/
 ├── configs/
 │   └── resnet50d_baseline.yaml
+├── report/
+│   └── neurips_2023.tex
 ├── src/
 │   ├── dataset.py
 │   ├── inference.py

@@ -1,0 +1,337 @@
+\documentclass{article}
+
+
+% if you need to pass options to natbib, use, e.g.:
+%     \PassOptionsToPackage{numbers, compress}{natbib}
+% before loading neurips_2023
+
+
+% ready for submission
+\usepackage[preprint]{neurips_2023}
+
+
+% to compile a preprint version, e.g., for submission to arXiv, add add the
+% [preprint] option:
+%     \usepackage[preprint]{neurips_2023}
+
+
+% to compile a camera-ready version, add the [final] option, e.g.:
+%     \usepackage[final]{neurips_2023}
+
+
+% to avoid loading the natbib package, add option nonatbib:
+%    \usepackage[nonatbib]{neurips_2023}
+
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsmath}        % math environments and commands
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+\usepackage{xcolor}         % colors
+\usepackage{graphicx}       % images
+\usepackage{float}          % [H] placement option for floats
+\usepackage{placeins}       % \FloatBarrier for controlling float placement
+
+
+\title{Machine Learning Final Project: \\ Leaf Recognition }
+
+
+% For multiple authors, use \And to separate names (LaTeX will break lines
+% automatically), or \AND to force a line break. For example:
+% \And for automatic line breaking, \AND for forced line break.
+
+
+\author{%
+  Zijie Chen\\
+  3230106106 \\
+  Department of Computer Science and Technology\\
+  \texttt{jazzy.chen@zju.edu.cn} \\
+  % examples of more authors
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \AND
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+  % \And
+  % Coauthor \\
+  % Affiliation \\
+  % Address \\
+  % \texttt{email} \\
+}
+
+
+\begin{document}
+
+
+\maketitle
+
+\begin{abstract}
+Leaf classification is a fundamental task in computer vision with applications in botany and ecology. This report presents my approach to the Kaggle "Classify Leaves" competition with 18,353 training images across 176 species. I propose an ensemble framework using EfficientNet-B4 and ResNet variants (ResNet50d, ResNet200d) trained with strong augmentation, mixup/cutmix (for EfficientNet), EMA, label smoothing, and loss-based data cleaning followed by low-learning-rate fine-tuning. Through rigorous experimentation with 5-fold cross-validation, model averaging, and optional test-time augmentation (TTA), I show that ensembling diverse backbones yields the best performance. My best public leaderboard score is 0.9879 and my best private leaderboard score is 0.9884.
+\end{abstract}
+
+
+\section{Introduction}
+
+Plant species identification is a crucial problem in biodiversity conservation and agriculture. Traditional methods rely on expert botanists, which is time-consuming and not scalable. The "Classify Leaves" competition on Kaggle challenges participants to build automated systems for classifying 176 categories of leaves. The key challenges include high inter-class similarity, intra-class variance due to lighting/pose, and mild label noise. Fine-grained recognition depends on subtle shape and venation cues, so high-resolution inputs and strong regularization are essential for robust generalization.
+
+In this project, I aim to develop a robust deep learning pipeline for leaf classification. My contributions are:
+\begin{enumerate}
+    \item Implementation of a flexible training pipeline supporting multiple backbones (EfficientNet, ResNet) via the \texttt{timm} library and 5-fold stratified cross-validation.
+    \item Application of strong augmentations (RandomResizedCrop, flips, rotation, color jitter), regularization (label smoothing, EMA), and mixup/cutmix (EfficientNet) to mitigate overfitting.
+    \item Loss-based data cleaning with a two-stage clean-data fine-tuning protocol to improve CV stability.
+    \item A comprehensive evaluation of single models and ensemble strategies (with/without TTA), plus ablations on learning-rate sweeps and mixup removal.
+\end{enumerate}
+
+
+\section{Methodology}
+
+\subsection{Data Preprocessing and Augmentation}
+The dataset consists of leaf images which are resized to fixed resolutions (e.g., $380 \times 380$ or $512 \times 512$) depending on the model architecture. I use the \texttt{albumentations} library for image transformations.
+
+\textbf{Training Augmentations}: To handle the fine-grained nature of the task and improve model robustness, I apply a strong augmentation pipeline:
+\begin{itemize}
+    \item \texttt{RandomResizedCrop}: Randomly cropping and resizing the image (scale 0.8--1.0, ratio 0.8--1.2) to encourage the model to focus on different parts of the leaf.
+    \item \texttt{HorizontalFlip} and \texttt{Rotate}: Geometric transformations (rotation up to 30 degrees) to handle pose variations.
+    \item \texttt{ColorJitter}: Adjusting brightness, contrast, saturation, and hue to improve lighting invariance.
+    \item \texttt{Normalize}: Standardizing images using ImageNet mean and standard deviation.
+\end{itemize}
+
+\textbf{Validation Preprocessing}: I resize to a slightly larger size and apply center crop to reduce scale variance at evaluation time.
+
+\textbf{Mixup and Cutmix}: I enable Mixup/Cutmix for EfficientNet-B4 (mixup alpha 0.2, cutmix alpha 0.1). For ResNet baselines and clean fine-tuning runs, I disable Mixup/Cutmix to keep optimization stable.
+
+\subsection{Model Architectures}
+I leverage transfer learning by fine-tuning models pre-trained on ImageNet. The models are selected to balance strong fine-grained recognition with architectural diversity for ensembling.
+
+\textbf{EfficientNet-B4 (Noisy Student)}. EfficientNet scales depth, width, and resolution with a compound coefficient $\phi$:
+
+$$
+d = \alpha^{\phi}, \quad w = \beta^{\phi}, \quad r = \gamma^{\phi}, \quad \text{s.t. }\alpha \beta^2 \gamma^2 \approx 2.
+$$
+
+This yields an efficient model that preserves accuracy under a fixed compute budget. I use input size $380 \times 380$ and replace the classifier with a linear layer to 176 classes.
+
+\textbf{ResNet50d and ResNet200d}. ResNets use residual connections to ease optimization in deep networks. A residual block computes
+\begin{equation}
+y = x + F(x; \theta),
+\end{equation}
+where $F$ is a stack of convolution, normalization, and nonlinearity. The ``d'' variants modify the stem and downsampling to improve transfer performance. I use input size $512 \times 512$ and replace the final classification head with a 176-way linear layer.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.3\linewidth]{effnet.png}
+  \caption{EfficientNet-B4 block diagram.}
+  \label{fig:effnet_arch}
+\end{figure}
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.7\linewidth]{resnet.png}
+  \caption{Residual block architecture diagram.}
+  \label{fig:resnet_arch}
+\end{figure}
+
+\subsection{Training Strategy}
+I use 5-fold stratified cross-validation. The training objective and regularization choices are designed to improve generalization under label noise and fine-grained visual variability.
+
+\textbf{Objective and label smoothing}. Let the dataset be $\{(x_i, y_i)\}_{i=1}^N$ with $K=176$ classes, $y_i \in \{0,1\}^K$ one-hot, logits $z=f_\theta(x)$, and $p=\mathrm{softmax}(z)$. The cross-entropy loss is
+\begin{equation}
+L_{\mathrm{CE}}(y,p) = -\sum_{k=1}^K y_k \log p_k.
+\end{equation}
+I apply label smoothing with $\varepsilon$ by using $y^{\mathrm{ls}}=(1-\varepsilon) y + \varepsilon/K$ and $L_{\mathrm{LS}}=L_{\mathrm{CE}}(y^{\mathrm{ls}},p)$. This reduces overconfidence and improves calibration. I use $\varepsilon=0.1$ for ResNet baselines and $\varepsilon=0.05$ for fine-tuning.
+
+\textbf{Mixup and CutMix}. To further regularize EfficientNet-B4, I use mixup and cutmix. For mixup, sample $\lambda \sim \mathrm{Beta}(\alpha,\alpha)$ and form
+\begin{equation}
+\tilde{x}=\lambda x_i+(1-\lambda)x_j, \quad \tilde{y}=\lambda y_i+(1-\lambda)y_j,
+\end{equation}
+then optimize $L_{\mathrm{CE}}(\tilde{y},p(\tilde{x}))$. For cutmix, sample a binary mask $M \in \{0,1\}^{H\times W}$ and set
+\begin{equation}
+\tilde{x}=M\odot x_i+(1-M)\odot x_j, \quad \tilde{y}=\lambda y_i+(1-\lambda)y_j, \quad \lambda=\frac{1}{HW}\sum M.
+\end{equation}
+Mixup/cutmix are disabled for ResNet baselines and for clean fine-tuning to keep optimization stable.
+
+\textbf{Optimization and scheduling}. I use AdamW with weight decay and gradient clipping, and a cosine annealing learning rate schedule. Given gradients $g_t$, AdamW maintains
+\begin{equation}
+m_t=\beta_1 m_{t-1}+(1-\beta_1)g_t, \quad v_t=\beta_2 v_{t-1}+(1-\beta_2)g_t^2,
+\end{equation}
+and updates parameters with decoupled weight decay,
+\begin{equation}
+\theta_{t+1}=\theta_t-\eta \frac{m_t}{\sqrt{v_t}+\epsilon}-\eta \lambda \theta_t.
+\end{equation}
+I clip gradients by $g_t \leftarrow g_t \cdot \min(1, \tau / \|g_t\|_2)$. Cosine annealing sets
+\begin{equation}
+\eta_t = \eta_{\min} + \frac{1}{2}(\eta_{\max}-\eta_{\min})(1+\cos(\pi t/T)).
+\end{equation}
+Mixed precision accelerates training via FP16 compute with loss scaling: $L_s = s L$, $g_{\mathrm{fp16}}=\nabla_{\theta_{\mathrm{fp16}}} L_s$, $g_{\mathrm{fp32}}=g_{\mathrm{fp16}}/s$, and $\theta_{\mathrm{fp32}} \leftarrow \theta_{\mathrm{fp32}} - \eta g_{\mathrm{fp32}}$.
+
+\textbf{EMA for stable evaluation}. I maintain an exponential moving average of parameters,
+\begin{equation}
+\theta_t^{\mathrm{ema}} = \beta \theta_{t-1}^{\mathrm{ema}} + (1-\beta)\theta_t,
+\end{equation}
+and evaluate with $\theta_T^{\mathrm{ema}}$ for EfficientNet-B4 and ResNet200d. EMA reduces variance and improves final generalization.
+
+\subsection{Inference, Ensembling, and TTA}
+At inference time, I mirror the validation preprocessing (resize + center crop + normalization) to reduce train-test shift. For each model configuration, I run all $F=5$ fold checkpoints and average their predicted class probabilities, which smooths variance caused by different folds and yields a more stable prediction per model.
+
+\textbf{Probability averaging}. For an input $x$, fold $f$, and model $m$, I denote probabilities as $p_{m,f}(x)=\mathrm{softmax}(f_{\theta_{m,f}}(x))$. The fold-averaged prediction is
+\begin{equation}
+\bar{p}_m(x)=\frac{1}{F}\sum_{f=1}^F p_{m,f}(x).
+\end{equation}
+For an ensemble of $M$ models, I use a uniform mean,
+\begin{equation}
+p_{\mathrm{ens}}(x)=\frac{1}{M}\sum_{m=1}^M \bar{p}_m(x),
+\end{equation}
+which is robust and emphasizes complementary representations across backbones.
+
+\textbf{Test-Time Augmentation (TTA)}. I evaluate a lightweight TTA using a horizontal flip $t(x)$ to probe invariance. Predictions are averaged across transforms,
+\begin{equation}
+p_{\mathrm{tta}}(x)=\frac{1}{T}\sum_{t \in \mathcal{T}} p_{\mathrm{ens}}(t(x)), \quad \mathcal{T}=\{\mathrm{identity},\mathrm{hflip}\},
+\end{equation}
+and compared with the non-TTA baseline. In practice the gain is negligible, likely because the training augmentations already include flips and strong spatial transforms, and the ensemble itself reduces variance.
+
+\subsection{Data Cleaning}
+I rank training samples by their per-sample loss using out-of-fold (OOF) predictions from a strong baseline. The highest-loss samples are treated as potential label issues. I removed 97 samples out of 18,353 (creating \texttt{train\_clean.csv} with 18,256 images), retrained models on the cleaned set, and then performed a low-learning-rate fine-tuning stage without mixup to refine decision boundaries.
+
+\begin{figure}[!htbp]
+  \centering
+  \includegraphics[width=0.95\linewidth]{label_issues_samples.png}
+  \caption{Representative label issue samples identified by loss-based data cleaning. Each image shows the true label and the model's predicted label, demonstrating cases where the original labels may be incorrect or ambiguous.}
+  \label{fig:label_issues}
+\end{figure}
+
+\section{Experiment Setup and Results}
+
+\subsection{Setup}
+All experiments were conducted on a single GPU (RTX 4090, 24GB) using PyTorch. The dataset contains 18,353 images across 176 classes and was split into 5 stratified folds. I trained on both the full dataset and the cleaned subset, and evaluated models based on Top-1 Accuracy.
+Hyperparameters:
+\begin{itemize}
+    \item Batch Size: 16 (EffNet-B4), 32 (ResNet50d), 8 (ResNet200d).
+    \item Epochs: 20-25 for full training, 3-5 for fine-tuning sweeps.
+    \item Learning Rate: 1e-3 (EffNet-B4), 2e-4 to 3e-4 (ResNet), and 5e-5 for clean fine-tuning.
+\end{itemize}
+
+\subsection{Results}
+Tables \ref{tab:single}--\ref{tab:ablation} summarize the performance of single models, ensembles, and ablations on local Cross-Validation (CV) and the Kaggle Public/Private Leaderboard (LB). EffB4 denotes EfficientNet-B4.
+
+\begin{table}[h]
+  \caption{Single-model results on full vs. cleaned data.}
+  \label{tab:single}
+  \centering
+  \begin{tabular}{lccccc}
+    \toprule
+    Model & Data & Res & CV Acc & Public LB & Private LB \\
+    \midrule
+    ResNet50d (baseline) & full & 512 & 0.9744 & 0.9798 & 0.9818 \\
+    ResNet200d (baseline) & full & 512 & 0.9769 & 0.9802 & 0.9834 \\
+    EfficientNet-B4 (baseline) & full & 380 & 0.9777 & 0.9834 & \textbf{0.9868} \\
+    EfficientNet-B4 (clean) & clean & 380 & 0.9832 & \textbf{0.9839} & 0.9857 \\
+    ResNet50d (clean) & clean & 512 & 0.9812 & 0.9805 & 0.9845 \\
+    ResNet200d (clean) & clean & 512 & 0.9819 & 0.9802 & 0.9834 \\
+    EfficientNet-B4 (clean ft) & clean & 380 & \textbf{0.9841} & 0.9839 & 0.9866 \\
+    ResNet50d (clean ft) & clean & 512 & 0.9814 & 0.9809 & 0.9845 \\
+    ResNet200d (clean ft) & clean & 512 & 0.9821 & 0.9807 & 0.9841 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[h]
+  \caption{Ensemble results.}
+  \label{tab:ensemble}
+  \centering
+  \begin{tabular}{lcccc}
+    \toprule
+    Ensemble & CV Acc & Public LB & Private LB & Notes \\
+    \midrule
+    EffB4 + Res50d (baseline) & 0.9767 & 0.9839 & 0.9882 & no TTA \\
+    EffB4 + Res50d + Res200d (baseline) & 0.9767 & 0.9834 & 0.9879 & with/without TTA \\
+    EffB4 + Res50d (clean) & 0.9832 & \textbf{0.9879} & 0.9843 & best public \\
+    EffB4 + Res50d (clean ft) & \textbf{0.9841} & 0.9839 & \textbf{0.9884} & best private \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\begin{table}[H]
+  \caption{EfficientNet-B4 fine-tuning sweeps (CV only when LB is not available).}
+  \label{tab:ablation}
+  \centering
+  \begin{tabular}{lccc}
+    \toprule
+    Setting & CV Acc & Public LB & Private LB \\
+    \midrule
+    No-mixup fine-tune (5 ep) & 0.9779 & 0.9827 & 0.9877 \\
+    LR=1e-4, 3 ep & 0.9778 & - & - \\
+    LR=1e-4, 5 ep & 0.9777 & - & - \\
+    LR=5e-5, 3 ep & 0.9775 & - & - \\
+    LR=5e-5, 5 ep & 0.9777 & - & - \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+\FloatBarrier
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\linewidth]{training_curves.png}
+  \caption{Training/validation accuracy and loss curves for baseline and clean fine-tuning runs.}
+  \label{fig:curves}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\linewidth]{ensemble_tta_chart.png}
+  \caption{Bar chart showing the effect of ensembling and TTA on leaderboard scores. The chart compares ensemble results with and without test-time augmentation (TTA) for two ensemble configurations.}
+  \label{fig:ensemble}
+\end{figure}
+\FloatBarrier
+
+\subsection{Analysis}
+\textbf{Single Models}: EfficientNet-B4 is the strongest single backbone, reaching a private LB of 0.9868. Training on cleaned data improves CV from 0.9777 to 0.9832, indicating that removing high-loss samples reduces noise and stabilizes learning.
+
+\textbf{Ensembling}: Averaging predictions of EfficientNet-B4 and ResNet50d provides consistent gains, achieving 0.9882 private LB on the baseline ensemble. Adding ResNet200d does not improve the leaderboard. A plausible explanation is diminishing returns from similar feature representations, combined with a less stable optimization regime due to the small batch size forced by GPU memory limits. The ResNet200d runs use batch size 8, which can make batch-norm statistics noisier and reduce optimization efficiency compared with larger-batch baselines (e.g., 32 or 64). This likely blunts the extra capacity of ResNet200d.
+
+\textbf{Fine-Tuning and Sweeps}: Clean-data fine-tuning yields the best private LB (0.9884) with a modest CV gain. Learning-rate sweeps produce only marginal changes, suggesting that the main gains come from data cleaning and ensembling rather than hyperparameter tuning.
+
+\textbf{Test Time Augmentation (TTA)}: Horizontal-flip TTA shows negligible improvement (differences within 0.0002). This may be because the training augmentations already include flips and strong spatial transforms, and the ensemble itself already reduces variance. As a result, TTA provides little additional diversity in predictions and is treated as optional to save inference time.
+
+\section{Conclusion}
+In this project, I successfully implemented a high-performance leaf classification system. By leveraging transfer learning with EfficientNet and ResNet architectures, combined with robust data augmentation, data cleaning, and ensemble strategies, I achieved best leaderboard scores of 98.79\% (public) and 98.84\% (private). Future work could explore Vision Transformers (ViT) or Swin Transformers to better capture global context in leaf structures.
+
+
+
+
+\begin{ack}
+I verify that all code and experiments are original. I acknowledge the open-source community for \texttt{timm} and \texttt{albumentations}. All code is available at \url{https://github.com/JazZyzJ/ML_project}.
+\end{ack}
+
+\section*{References}
+
+\medskip
+
+{
+\small
+
+[1] Tan, M. \& Le, Q. (2019) EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks. \textit{ICML}.
+
+[2] He, K., Zhang, X., Ren, S. \& Sun, J. (2016) Deep Residual Learning for Image Recognition. \textit{CVPR}.
+
+[3] Wightman, R. (2019) PyTorch Image Models. \url{https://github.com/rwightman/pytorch-image-models}.
+
+[4] Yun, S., et al. (2019) CutMix: Regularization Strategy to Train Strong Classifiers with Localizable Features. \textit{ICCV}.
+
+}
+
+\end{document}

@@ -1,0 +1,15 @@
+# Fdb version 4
+["pdflatex"] 1765944279.46643 "/Users/jerry/Experiments/Opt/main.tex" "main.pdf" "main" 1765944279.55877 2
+  "/Users/jerry/Experiments/Opt/main.tex" 1765944188.45357 16604 32627a15a37dd022023c69d2a9a5d62e ""
+  "/opt/homebrew/Cellar/texlive/20250308_1/share/texmf-dist/tex/latex/base/article.cls" 1741388039 20144 63d8bacaf52e5abf4db3bc322373e1d4 ""
+  "/opt/homebrew/Cellar/texlive/20250308_1/share/texmf-dist/tex/latex/base/size10.clo" 1741388039 8448 5cf247d4bd0c7d5d711bbbdf111fae2e ""
+  "/opt/homebrew/Cellar/texlive/20250308_1/share/texmf-dist/web2c/texmf.cnf" 1741388039 42151 79f67285bdd95beca4d137b380b4b9e5 ""
+  "/opt/homebrew/Cellar/texlive/20250308_1/share/texmf-var/web2c/pdftex/pdflatex.fmt" 1741388039 3346130 7452757cd3dccf35ed95e5913cd324e3 ""
+  "main.aux" 1765944279.46597 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
+  "main.tex" 1765944188.45357 16604 32627a15a37dd022023c69d2a9a5d62e ""
+  "neurips_2023.sty" 0 -1 0 ""
+  (generated)
+  "main.aux"
+  "main.log"
+  "main.pdf"
+  (rewritten before read)
